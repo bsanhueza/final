@@ -1,5 +1,5 @@
 <h1>Upcoming Games</h1>
 <br>
 <% for event in @events %>
-    <p><a href="/events/<%= event[:id] %>"><%= event[:date] %> - <%= event[:location] %></a></p>
+    <p><a href="/events/<%= event[:id] %>"><%= event[:date] %> - <%= event[:location] %> (<%= event[:capacity]/2 %>v<%= event[:capacity]/2 %>)</a></p>
 <% end %>

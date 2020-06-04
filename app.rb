@@ -44,3 +44,48 @@ get "/events/:id" do
     @lat_long = @event[:location]
     view "event"
 end
+
+# Create user
+get "/users/new" do
+    view "new_user"
+end
+
+# Receiving end of new user form
+post "/users/create" do
+    puts params.inspect
+    users_table.insert(:name => params["name"],
+                       :email => params["email"],
+                       :phone => params["phone"],
+                       :password => BCrypt::Password.create(params["password"])) #Password encription
+    view "create_user"
+end
+
+# Form to login
+get "/logins/new" do
+    view "new_login"
+end
+
+# Receiving end of login form
+post "/logins/create" do
+    email_entered = params["email"]
+    password_entered = params["password"]
+    # SELECT * FROM users WHERE email = email_entered
+    user = users_table.where(:email => email_entered).to_a[0]
+    if user
+        # test the password against the one in the users table
+        if BCrypt::Password.new(user[:password]) == password_entered
+            session[:user_id] = user[:id]
+            view "create_login"
+        else
+            view "create_login_failed"
+        end
+    else 
+        view "create_login_failed"
+    end
+end
+
+# Logout
+get "/logout" do
+    session[:user_id] = nil
+    view "logout"
+end
