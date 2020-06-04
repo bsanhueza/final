@@ -1,0 +1,5 @@
+<h1>Upcoming Games</h1>
+<br>
+<% for event in @events %>
+    <p><a href="/events/<%= event[:id] %>"><%= event[:date] %> - <%= event[:location] %></a></p>
+<% end %>
