@@ -21,32 +21,41 @@
         </iframe>
         <br><br>
         <% if @event[:bbq] %>
-            <p><i class="fas fa-hamburger"></i> TBD</p>
-        <% end %>
-            <% for rsvp in @rsvps %>
-            <% user = @users_table.where(:id => rsvp[:user_id]).to_a[0] %>
-            <div class="media">
-                <% if rsvp[:going] %>
-                    <i class="fas fa-thumbs-up fa-3x mr-3"></i>
-                <% else %>
-                    <i class="fas fa-thumbs-down fa-3x mr-3"></i>
-                <% end %>
-                <div class="media-body">
-                    <h5 class="mt-0"><%= user[:name] %></h5>
-                    <%= rsvp[:comments] %>
-                </div>
-            </div>
-        <% end %>
-        <% if @current_user %>
-            <p class="mt-5">
-                <a href="/events/<%= @event[:id] %>/rsvps/new" class="btn btn-primary">RSVP</a>
+            <p><i class="fas fa-hamburger"></i> 
+                #BBQ Host
             </p>
-        <% else %>
-            <p class="mt-5"><i class="fas fa-sign-in-alt"></i> Login to RSVP</p>
         <% end %>
     </div>
     <div class="col-sm-3">
-        <h3>Attendees</h3>
-        <p><%= @count %></p>
+        <% if @current_user %>
+            <% if @attendance %>
+                <p class="mt-5">
+                    <i class="fas fa-check-circle"></i> You're confirmed!
+                </p>
+            <% else %>
+                <p class="mt-5">
+                    <a href="/events/<%= @event[:id] %>/rsvps/new" class="btn btn-primary">RSVP</a>
+                </p>
+            <% end %>
+        <% else %>
+            <p class="mt-5"><i class="fas fa-sign-in-alt"></i> Login to RSVP</p>
+        <% end %>
+        <br>
+        <h3>Attendees: <%= @count %></h3>
+                <% for rsvp in @rsvps %>
+            <% user = @users_table.where(:id => rsvp[:name_id]).to_a[0] %>
+            <div class="media">
+                <div class="media-body">
+                    <p class-"mt-5">
+                         <% if rsvp[:going] %>
+                            <i class="fas fa-thumbs-up fa-3x mr-3"></i>
+                         <% else %>
+                            <i class="fas fa-thumbs-down fa-3x mr-3"></i>
+                         <% end %>
+                         <%= user[:name] %>
+                    </p>
+                </div>
+            </div>
+        <% end %>
     </div>
 </div>

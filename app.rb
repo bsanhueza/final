@@ -22,7 +22,6 @@ users_table = DB.from(:users)
 before do
     # SELECT * FROM users WHERE id = session[:user_id]
     @current_user = users_table.where(:id => session[:user_id]).to_a[0]
-    puts @current_user.inspect
 end
 
 # Home page (all events)
@@ -42,6 +41,9 @@ get "/events/:id" do
     # SELECT COUNT(*) FROM rsvps WHERE event_id=:id AND going=1
     @count = rsvps_table.where(:event_id => params["id"], :going => true).count
     @lat_long = @event[:location]
+    @attendance = rsvps_table.where(:event_id => params["id"], :name_id => @current_user[:id]).to_a[0]
+    @bbq_aux = rsvps_table.where(:event_id => params["id"], :bbq_host => true).to_a[0]
+    @bbq_person = users_table.where(:id => @bbq_aux[:name_id]).to_a[0]
     view "event"
 end
 
@@ -103,3 +105,21 @@ post "/event/create" do
                        :bbq => params["bbq"])
     view "create_event"
 end
+
+# Form to create a new RSVP
+get "/events/:id/rsvps/new" do
+    @event = events_table.where(:id => params["id"]).to_a[0]
+    @count_bbq_host = rsvps_table.where(:event_id => params["id"], :bbq_host => true).count
+    view "new_rsvp"
+end
+
+# Receiving end of new RSVP form
+post "/events/:id/rsvps/create" do
+    rsvps_table.insert(:event_id => params["id"],
+                       :going => params["going"],
+                       :going_bbq => params["going_bbq"],
+                       :bbq_host => params["bbq_host"],
+                       :name_id => @current_user[:id])
+    view "create_rsvp"
+end
+

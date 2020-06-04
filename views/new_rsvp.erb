@@ -1,0 +1,30 @@
+<h1><i class="far fa-calendar-check"></i> RSVP for <%= @event[:date] %> - <%= @event[:location] %></h1>
+
+<form action="/events/<%= @event[:id] %>/rsvps/create" method="POST">
+  <div class="form-group">
+    <label>Are you going to the game?</label>
+    <select class="form-control" name="going">
+      <option value="1">Yes</option>
+      <option value="0">No</option>
+    </select>
+  </div>
+  <% if @event[:bbq] then %>
+    <div class="form-group">
+        <label>Are you going to the after game BBQ?</label>
+        <select class="form-control" name="going_bbq">
+            <option value="1">Yes</option>
+            <option value="0">No</option>
+        </select>
+    </div>   
+    <% if @count_bbq_host == 0 then %>
+        <div class="form-group">
+            <label>Do you want to be responsible for the BBQ?</label>
+            <select class="form-control" name="bbq_host">
+                <option value="1">Yes</option>
+                <option value="0">No</option>
+            </select>
+        </div>      
+    <% end %>
+  <% end %>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
