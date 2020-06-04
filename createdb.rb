@@ -36,22 +36,22 @@ events_table.insert(date: "June 21",
                     time: "19:00",
                     location: "La Caimanera Doral",
                     capacity: 12,
-                    bbq: 0)
+                    bbq: false)
 
 events_table.insert(date: "June 24",
                     time: "20:00",
                     location: "Stadio Soccer Miami",
                     capacity: 14,
-                    bbq: 1)
+                    bbq: true)
 
 events_table.insert(date: "June 27",
                     time: "09:00",
                     location: "Rooftop Soccer Brickell",
                     capacity: 10,
-                    bbq: 0)
+                    bbq: false)
 
 events_table.insert(date: "June 30",
                     time: "16:00",
                     location: "MAST Academy Key Biscayne",
                     capacity: 22,
-                    bbq: 1)
+                    bbq: true)
