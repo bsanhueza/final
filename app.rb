@@ -52,7 +52,6 @@ end
 
 # Receiving end of new user form
 post "/users/create" do
-    puts params.inspect
     users_table.insert(:name => params["name"],
                        :email => params["email"],
                        :phone => params["phone"],
@@ -88,4 +87,19 @@ end
 get "/logout" do
     session[:user_id] = nil
     view "logout"
+end
+
+# Form to event
+get "/event/new" do
+    view "new_event"
+end
+
+# Receiving end of new event form
+post "/event/create" do
+    events_table.insert(:date => params["date"],
+                       :time => params["time"],
+                       :location => params["location"],
+                       :capacity => params["capacity"],
+                       :bbq => params["bbq"])
+    view "create_event"
 end

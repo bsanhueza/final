@@ -20,8 +20,10 @@
             src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCtovsQvkIUWlNqtYwXY87gEd4ZSmJEhMw&q=<%= @lat_long %>&zoom=15" allowfullscreen>
         </iframe>
         <br><br>
-        <p><i class="fas fa-hamburger"></i> TBD</p>
-        <% for rsvp in @rsvps %>
+        <% if @event[:bbq] %>
+            <p><i class="fas fa-hamburger"></i> TBD</p>
+        <% end %>
+            <% for rsvp in @rsvps %>
             <% user = @users_table.where(:id => rsvp[:user_id]).to_a[0] %>
             <div class="media">
                 <% if rsvp[:going] %>
@@ -35,9 +37,13 @@
                 </div>
             </div>
         <% end %>
-        <p class="mt-5">
-            <a href="/events/<%= @event[:id] %>/rsvps/new" class="btn btn-primary">RSVP</a>
-        </p>
+        <% if @current_user %>
+            <p class="mt-5">
+                <a href="/events/<%= @event[:id] %>/rsvps/new" class="btn btn-primary">RSVP</a>
+            </p>
+        <% else %>
+            <p class="mt-5"><i class="fas fa-sign-in-alt"></i> Login to RSVP</p>
+        <% end %>
     </div>
     <div class="col-sm-3">
         <h3>Attendees</h3>

@@ -1,0 +1,32 @@
+<h1>New Pickup Game</h1>
+
+<form action="/event/create" method="POST">
+  <div class="form-group">
+    <label>Date</label>
+    <input type="date" class="form-control" placeholder="month day" name="date">
+  </div>
+  <div class="form-group">
+    <label>Time</label>
+    <input type="time" class="form-control" placeholder="##:##" name="time">
+  </div>
+  <div class="form-group">
+    <label>Location</label>
+    <input type="location" class="form-control" placeholder="address or name of the venue" name="location">
+  </div>
+  <div class="form-group">
+    <label>Capacity</label>
+    <select class="form-control" name="capacity">
+        <option value=10>10 people (5v5)</option>
+        <option value=12>12 people (6v6)</option>
+        <option value=21>21 people (11v11)</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label>BBQ</label>
+    <select class="form-control" name="bbq">
+        <option value="1">Yes</option>
+        <option value="0">No</option>
+    </select>
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
