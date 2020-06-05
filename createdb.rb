@@ -10,6 +10,7 @@ DB.create_table! :events do
   String :date
   String :time
   String :location
+  String :address
   Integer :capacity # max people that can play a game (no bench)
   Boolean :bbq # is there going to be an after game bbq party?
 end
@@ -35,23 +36,27 @@ events_table = DB.from(:events)
 events_table.insert(date: "June 21",
                     time: "19:00",
                     location: "La Caimanera Doral",
+                    address: "8111 NW 54th St, Doral, FL 33166",
                     capacity: 12,
                     bbq: false)
 
 events_table.insert(date: "June 24",
                     time: "20:00",
                     location: "Stadio Soccer Miami",
+                    address: "571 NW 73rd St, Miami, FL 33150",
                     capacity: 14,
                     bbq: true)
 
 events_table.insert(date: "June 27",
                     time: "09:00",
                     location: "Rooftop Soccer Brickell",
+                    address: "444 Brickell Ave, Miami, FL 33131",
                     capacity: 10,
                     bbq: false)
 
 events_table.insert(date: "June 30",
                     time: "16:00",
                     location: "MAST Academy Key Biscayne",
+                    address: "3979 Rickenbacker Causeway, Miami, FL 33149",
                     capacity: 22,
                     bbq: true)

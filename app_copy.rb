@@ -40,7 +40,8 @@ get "/events/:id" do
     @rsvps = rsvps_table.where(:event_id => params["id"]).to_a
     # SELECT COUNT(*) FROM rsvps WHERE event_id=:id AND going=1
     @count = rsvps_table.where(:event_id => params["id"], :going => "true").count
-    @lat_long = @event[:location]
+    results = Geocoder.search(@event[:address])
+    @lat_long = results.first.coordinates.join(",")
     if @current_user
         @attendance = rsvps_table.where(:event_id => params["id"], :name_id => @current_user[:id]).to_a[0]
     end
@@ -105,6 +106,7 @@ post "/event/create" do
     events_table.insert(:date => params["date"],
                        :time => params["time"],
                        :location => params["location"],
+                       :address => params["address"],
                        :capacity => params["capacity"],
                        :bbq => params["bbq"])
     view "create_event"
@@ -120,10 +122,10 @@ end
 # Receiving end of new RSVP form
 post "/events/:id/rsvps/create" do
     rsvps_table.insert(:event_id => params["id"],
-                       :name_id => @current_user[:id],
                        :going => params["going"],
                        :going_bbq => params["going_bbq"],
-                       :bbq_host => params["bbq_host"])
+                       :bbq_host => params["bbq_host"],
+                       :name_id => @current_user[:id])
     @event = events_table.where(:id => params["id"]).to_a[0]
 
     #Twilio only works with +1 305 570 9056
