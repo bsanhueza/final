@@ -8,3 +8,5 @@ The game planning was made via Whatsapp, which had some flaws in terms of tidyne
 Pickup Soccer Miami allows players to sign up/create games/browse games/RSVP for games/RSVP for BBQ/check attendance/get notified on their phones.
 
 Heroku URL: https://desolate-temple-07635.herokuapp.com
+
+Twilio works with my number: +1 305 570 9056
