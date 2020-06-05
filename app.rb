@@ -48,9 +48,6 @@ get "/events/:id" do
     if @bbq_aux
         @bbq_person = users_table.where(:id => @bbq_aux[:name_id]).to_a[0]
     end
-        puts @attendance.inspect
-    puts @bbq_aux.inspect
-    puts @bbq_person.inspect
     view "event"
 end
 
@@ -128,14 +125,18 @@ post "/events/:id/rsvps/create" do
                        :bbq_host => params["bbq_host"],
                        :name_id => @current_user[:id])
     @event = events_table.where(:id => params["id"]).to_a[0]
-    account_sid = ENV["TWILIO_ACCOUNT_SID"]
-    auth_token = ENV["TWILIO_AUTH_TOKEN"]
-    client = Twilio::REST::Client.new(account_sid,auth_token)
-    client.messages.create(
-        from: "+12566458516",
-        to: "+1#{@current_user[:phone]}",
-        body: "Dear #{@current_user[:name]}, you've RSVP'd to play pickup soccer: #{@event[:location]}, #{@event[:date]} at #{@event[:time]}!"
-    )
+
+    #Twilio only works with +1 305 570 9056
+    if @current_user[:phone] == "3055709056"
+        account_sid = ENV["TWILIO_ACCOUNT_SID"]
+        auth_token = ENV["TWILIO_AUTH_TOKEN"]
+        client = Twilio::REST::Client.new(account_sid,auth_token)
+        client.messages.create(
+            from: "+12566458516",
+            to: "+1#{@current_user[:phone]}",
+            body: "Dear #{@current_user[:name]}, you've RSVP'd to play pickup soccer: #{@event[:location]}, #{@event[:date]} at #{@event[:time]}!"
+        )
+    end
     view "create_rsvp"
 end
 
