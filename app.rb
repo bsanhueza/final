@@ -41,9 +41,16 @@ get "/events/:id" do
     # SELECT COUNT(*) FROM rsvps WHERE event_id=:id AND going=1
     @count = rsvps_table.where(:event_id => params["id"], :going => true).count
     @lat_long = @event[:location]
-    @attendance = rsvps_table.where(:event_id => params["id"], :name_id => @current_user[:id]).to_a[0]
+    if @current_user
+        @attendance = rsvps_table.where(:event_id => params["id"], :name_id => @current_user[:id]).to_a[0]
+    end
     @bbq_aux = rsvps_table.where(:event_id => params["id"], :bbq_host => true).to_a[0]
-    @bbq_person = users_table.where(:id => @bbq_aux[:name_id]).to_a[0]
+    if @bbq_aux
+        @bbq_person = users_table.where(:id => @bbq_aux[:name_id]).to_a[0]
+    end
+        puts @attendance.inspect
+    puts @bbq_aux.inspect
+    puts @bbq_person.inspect
     view "event"
 end
 
@@ -120,6 +127,15 @@ post "/events/:id/rsvps/create" do
                        :going_bbq => params["going_bbq"],
                        :bbq_host => params["bbq_host"],
                        :name_id => @current_user[:id])
+    @event = events_table.where(:id => params["id"]).to_a[0]
+    account_sid = ENV["TWILIO_ACCOUNT_SID"]
+    auth_token = ENV["TWILIO_AUTH_TOKEN"]
+    client = Twilio::REST::Client.new(account_sid,auth_token)
+    client.messages.create(
+        from: "+12566458516",
+        to: "+1#{@current_user[:phone]}",
+        body: "Dear #{@current_user[:name]}, you've RSVP'd to play pickup soccer: #{@event[:location]}, #{@event[:date]} at #{@event[:time]}!"
+    )
     view "create_rsvp"
 end
 

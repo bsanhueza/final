@@ -22,37 +22,54 @@
         <br><br>
         <% if @event[:bbq] %>
             <p><i class="fas fa-hamburger"></i> 
-                #BBQ Host
+                <% if @bbq_person %>
+                    BBQ hosted by: <%= @bbq_person[:name] %>
+                <% else %>
+                    BBQ host: TBD
+                <% end %>
             </p>
         <% end %>
     </div>
     <div class="col-sm-3">
-        <% if @current_user %>
-            <% if @attendance %>
-                <p class="mt-5">
-                    <i class="fas fa-check-circle"></i> You're confirmed!
-                </p>
-            <% else %>
-                <p class="mt-5">
-                    <a href="/events/<%= @event[:id] %>/rsvps/new" class="btn btn-primary">RSVP</a>
-                </p>
-            <% end %>
+        <% if @count == @event[:capacity] %>
+                <h4>
+                    <i class="fas fa-futbol"></i> Game is on!
+                </h4>
+                <% if @current_user %>
+                    <% if @attendance %>
+                        <p class="mt-5">
+                            <i class="fas fa-check-circle"></i> You're confirmed!
+                        </p>
+                    <% end %>
+                <% end %>
         <% else %>
-            <p class="mt-5"><i class="fas fa-sign-in-alt"></i> Login to RSVP</p>
+            <% if @current_user %>
+                <% if @attendance %>
+                    <p class="mt-5">
+                        <i class="fas fa-check-circle"></i> You're confirmed!
+                    </p>
+                <% else %>
+                    <p class="mt-5">
+                        <a href="/events/<%= @event[:id] %>/rsvps/new" class="btn btn-primary">RSVP</a>
+                    </p>
+                <% end %>
+            <% else %>
+                <p class="mt-5"><i class="fas fa-sign-in-alt"></i> Login to RSVP</p>
+            <% end %>
         <% end %>
         <br>
         <h3>Attendees: <%= @count %></h3>
-                <% for rsvp in @rsvps %>
+        <% for rsvp in @rsvps %>
             <% user = @users_table.where(:id => rsvp[:name_id]).to_a[0] %>
             <div class="media">
                 <div class="media-body">
                     <p class-"mt-5">
                          <% if rsvp[:going] %>
-                            <i class="fas fa-thumbs-up fa-3x mr-3"></i>
-                         <% else %>
-                            <i class="fas fa-thumbs-down fa-3x mr-3"></i>
+                            <i class="fas fa-user-check"></i> <%= user[:name] %>
+                            <% if rsvp[:going_bbq] %>
+                                <i class="fas fa-hamburger"></i>
+                            <% end %>
                          <% end %>
-                         <%= user[:name] %>
                     </p>
                 </div>
             </div>
