@@ -40,7 +40,8 @@ get "/events/:id" do
     @rsvps = rsvps_table.where(:event_id => params["id"]).to_a
     # SELECT COUNT(*) FROM rsvps WHERE event_id=:id AND going=1
     @count = rsvps_table.where(:event_id => params["id"], :going => "true").count
-    @lat_long = @event[:location]
+    results = Geocoder.search(@event[:address])
+    @lat_long = results.first.coordinates.join(",")
     if @current_user
         @attendance = rsvps_table.where(:event_id => params["id"], :name_id => @current_user[:id]).to_a[0]
     end
@@ -105,6 +106,7 @@ post "/event/create" do
     events_table.insert(:date => params["date"],
                        :time => params["time"],
                        :location => params["location"],
+                       :address => params["address"],
                        :capacity => params["capacity"],
                        :bbq => params["bbq"])
     view "create_event"
@@ -119,25 +121,24 @@ end
 
 # Receiving end of new RSVP form
 post "/events/:id/rsvps/create" do
-    rsvps_table.insert(:event_id => params["id"],
-                       :name_id => @current_user[:id],
-                       :going => params["going"],
-                       :going_bbq => params["going_bbq"],
-                       :bbq_host => params["bbq_host"])
-    @event = events_table.where(:id => params["id"]).to_a[0]
-
+    rsvps_table.insert(:event_id => params["id"], # Event ID
+                       :going => params["going"], # Going to play or not?
+                       :going_bbq => params["going_bbq"], # Going to the after game BBQ or not?
+                       :bbq_host => params["bbq_host"], # BBQ leader or not?
+                       :name_id => @current_user[:id]) # Name of the logged-in user
+    @event = events_table.where(:id => params["id"]).to_a[0] # Current event details
     #Twilio only works with +1 305 570 9056
-    if @current_user[:phone] == "3055709056"
+     if @current_user[:phone] == "3055709056"
         account_sid = ENV["TWILIO_ACCOUNT_SID"]
         auth_token = ENV["TWILIO_AUTH_TOKEN"]
         client = Twilio::REST::Client.new(account_sid,auth_token)
         client.messages.create(
             from: "+12566458516",
             to: "+1#{@current_user[:phone]}",
-            body: "Dear #{@current_user[:name]}, you've RSVP'd to play pickup soccer: #{@event[:location]}, #{@event[:date]} at #{@event[:time]}!"
+            body: "Dear #{@current_user[:name]}, you've RSVP'd to play pickup soccer: #{@event[:location]}, 
+                  #{@event[:date]} at #{@event[:time]}!"
         )
-    end
-    
+    end  
     view "create_rsvp"
 end
 
